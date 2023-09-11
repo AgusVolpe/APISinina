@@ -29,7 +29,8 @@ namespace TPFinalBitwise.Utilidades
             CreateMap<Categoria, CategoriaConProductosDTO>()
                 .ForMember(d => d.Productos, opt => opt.MapFrom(o => o.Productos));
 
-
+            CreateMap<Item, ItemCreacionDTO>().ReverseMap();
+            CreateMap<Item, ItemDTO>().ReverseMap();
         }
     }
 }

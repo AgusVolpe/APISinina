@@ -18,6 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt => opt.UseSqlServer(buil
 builder.Services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddTransient(typeof(IProductoRepository), typeof(ProductoRepository));
 builder.Services.AddTransient(typeof(ICategoriaRepository), typeof(CategoriaRepository));
+builder.Services.AddTransient(typeof(IItemRepository), typeof(ItemRepository));
 builder.Services.AddAutoMapper(typeof(AutomapperProfile));
 
 

@@ -52,5 +52,6 @@ namespace TPFinalBitwise.DAL.Implementaciones
         {
             return await _context.Set<T>().ToListAsync();
         }
+
     }
 }
