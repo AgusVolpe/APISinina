@@ -6,6 +6,5 @@ namespace TPFinalBitwise.DAL.Interfaces
     {
         public Task<IEnumerable<Item>> ObtenerTodosConData();
         public Task<Item> ObtenerPorIdConData(int id);
-        //public Task<Item> ObtenerPorIdConData(int id);
     }
 }

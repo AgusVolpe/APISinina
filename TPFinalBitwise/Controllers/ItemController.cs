@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,8 @@ namespace TPFinalBitwise.Controllers
             _productoRepository = productoRepository;
         }
 
+        [ResponseCache(CacheProfileName = "CachePorDefecto")]
+        [Authorize(Roles = "Admin, Cliente")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ItemDTO>>> ObtenerTodos()
         {
@@ -35,6 +38,8 @@ namespace TPFinalBitwise.Controllers
             return Ok(itemsDTO);
         }
 
+        [ResponseCache(CacheProfileName = "CachePorDefecto")]
+        [Authorize(Roles = "Admin, Cliente")]
         [HttpGet("{id}", Name = "GetItem")]
         public async Task<ActionResult<ItemDTO>> ObtenerPorId(int id)
         {
@@ -49,7 +54,8 @@ namespace TPFinalBitwise.Controllers
 
         }
 
-        //[ResponseCache(CacheProfileName = "PorDefecto")]
+        [ResponseCache(CacheProfileName = "CachePorDefecto")]
+        [Authorize(Roles = "Admin, Cliente")]
         [HttpGet("ObtenerConDataRelacionada/{id}")]
         public async Task<ActionResult<ItemDTO>> ObtenerConDataRelacionada(int id)
         {
@@ -63,7 +69,8 @@ namespace TPFinalBitwise.Controllers
         }
 
 
-        //[ResponseCache(CacheProfileName = "PorDefecto")]
+        [ResponseCache(CacheProfileName = "CachePorDefecto")]
+        [Authorize(Roles = "Admin, Cliente")]
         [HttpGet("TodosConDataRelacionada")]
         public async Task<ActionResult<IEnumerable<ItemDTO>>> TodosConDataRelacionada()
         {
@@ -71,9 +78,9 @@ namespace TPFinalBitwise.Controllers
             var itemsDTO = _mapper.Map<IEnumerable<ItemDTO>>(items);
             return Ok(itemsDTO);
         }
-        
 
-        //[Authorize(Roles = "admin")]
+
+        [Authorize(Roles = "Admin, Cliente")]
         [HttpPost]
         public async Task<ActionResult> Insertar(ItemCreacionDTO itemCreacionDTO)
         {
@@ -102,7 +109,7 @@ namespace TPFinalBitwise.Controllers
             }
         }
 
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin, Cliente")]
         [HttpPut("{id}")]
         public async Task<ActionResult> Actualizar(int id, ItemCreacionDTO itemCreacionDTO)
         {
@@ -120,7 +127,7 @@ namespace TPFinalBitwise.Controllers
             return NoContent();
         }
 
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin, Cliente")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Eliminar(int id)
         {
