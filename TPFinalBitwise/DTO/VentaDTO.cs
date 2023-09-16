@@ -6,8 +6,8 @@ namespace TPFinalBitwise.DTO
     {
         public int Id { get; set; }
         public string? FechaRealizacion { get; set; }
-        public UsuarioDatosDTO Usuario { get; set; } = null!;
-        public HashSet<ItemDTO> Items { get; set; } = new HashSet<ItemDTO>();
+        public UsuarioDatosVentaDTO User { get; set; } = null!;
+        public HashSet<ItemDatosVentaDTO> Items { get; set; } = new HashSet<ItemDatosVentaDTO>();
         public float Total { get; set; }
     }
 }

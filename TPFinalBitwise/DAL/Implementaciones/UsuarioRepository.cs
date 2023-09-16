@@ -19,14 +19,13 @@ namespace TPFinalBitwise.DAL.Implementaciones
         private readonly UserManager<Usuario> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
-        private readonly IConfiguration _config;
 
 
         public UsuarioRepository(ApplicationDbContext context, IConfiguration config, UserManager<Usuario> userManager,
                                     RoleManager<IdentityRole> roleManager, IMapper mapper) : base(context)
         {
             _context = context;
-            claveSecreta = config.GetValue<string>("Settigns:PasswordSecreta");
+            claveSecreta = config.GetValue<string>("Settings:PasswordSecreta");
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
@@ -61,8 +60,7 @@ namespace TPFinalBitwise.DAL.Implementaciones
             var roles = await _userManager.GetRolesAsync(usuarioEncontrado);
 
             var manejadorToken = new JwtSecurityTokenHandler();
-            //var key = Encoding.ASCII.GetBytes(claveSecreta);
-            var key = Encoding.ASCII.GetBytes("PasswordSecretaParaElTrabajoFinalDelCursoDeBitwise");
+            var key = Encoding.ASCII.GetBytes(claveSecreta);
             
             var tokenInformacion = new SecurityTokenDescriptor
             {

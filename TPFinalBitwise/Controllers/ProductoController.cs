@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace TPFinalBitwise.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(Policy = "AdminPolicy")]
     public class ProductoController : ControllerBase
     {
         private readonly IGenericRepository<Producto> _repository;
@@ -67,11 +69,11 @@ namespace TPFinalBitwise.Controllers
             var productosDTO = _mapper.Map<IEnumerable<ProductoDTO>>(productos);
             return Ok(productosDTO);
         }
-        
 
+        //[Authorize(Policy = "AdminPolicy")]
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult> Insertar(ProductoCreacionDTO productoCreacionDTO)
+        public async Task<ActionResult> Insertar([FromBody] ProductoCreacionDTO productoCreacionDTO)
         {
             var producto = _mapper.Map<Producto>(productoCreacionDTO);
 
@@ -87,7 +89,7 @@ namespace TPFinalBitwise.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<ActionResult> Actualizar(int id, ProductoCreacionDTO productoCreacionDTO)
+        public async Task<ActionResult> Actualizar([FromRoute] int id, [FromBody] ProductoCreacionDTO productoCreacionDTO)
         {
             var producto = await _repository.ObtenerPorId(id);
             if (producto == null)
@@ -105,7 +107,7 @@ namespace TPFinalBitwise.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Eliminar(int id)
+        public async Task<ActionResult> Eliminar([FromBody] int id)
         {
             var resultado = await _repository.Eliminar(id);
             if (!resultado)

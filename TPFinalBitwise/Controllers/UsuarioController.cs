@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -25,6 +26,7 @@ namespace TPFinalBitwise.Controllers
             this._respuestaAPI = new RespuestaAPI();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UsuarioDatosDTO>>> ObtenerTodos()
         {
@@ -33,6 +35,7 @@ namespace TPFinalBitwise.Controllers
             return Ok(usuariosDTO);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id}", Name = "GetUsuario")]
         public async Task<ActionResult<IEnumerable<UsuarioDatosDTO>>> Obtener(string id)
         {

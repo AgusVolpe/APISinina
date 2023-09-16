@@ -6,7 +6,7 @@
         public DateTime FechaRealizacion { get; set; }
         public float Total { get; set; }
         public string? UserId { get; set; }
-        public Usuario Usuario { get; set; } = null!;
+        public Usuario User { get; set; } = null!;
         public HashSet<Item> Items { get; set; } = new HashSet<Item>();
     }
 

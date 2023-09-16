@@ -61,28 +61,29 @@ builder.Services.AddTransient(typeof(IVentaRepository), typeof(VentaRepository))
 builder.Services.AddTransient(typeof(IUsuarioRepository), typeof(UsuarioRepository));
 builder.Services.AddAutoMapper(typeof(AutomapperProfile));
 
+//Soporte para autenticacion con .Net Identity
+builder.Services.AddIdentity<Usuario, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
 var clave = builder.Configuration.GetValue<string>("Settings:PasswordSecreta");
 builder.Services.AddAuthentication(x =>
-{
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(x =>
-{
-    x.RequireHttpsMetadata = false;
-    x.SaveToken = true;
-    x.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(clave)),
-        ValidateIssuer = false,
-        ValidateAudience = false
-    };
-});
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(x =>
+    {
+        x.RequireHttpsMetadata = false;
+        x.SaveToken = true;
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(clave)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 
 
-//Soporte para autenticacion con .Net Identity
-builder.Services.AddIdentity<Usuario, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
 
 builder.Services.AddResponseCaching();
 
@@ -91,6 +92,11 @@ builder.Services.AddCors(p => p.AddPolicy("PolicyCors", policy =>
     policy.WithOrigins("*").AllowAnyHeader().AllowAnyMethod();
 }));
 
+/*builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+});
+*/
 
 var app = builder.Build();
 
@@ -109,5 +115,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+/*app.MapControllerRoute(
+   name: "default", 
+   pattern: "{controller}/{action=Index}/{id?}");
+*/
 
 app.Run();

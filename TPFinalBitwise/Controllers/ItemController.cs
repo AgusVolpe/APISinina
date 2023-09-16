@@ -29,7 +29,7 @@ namespace TPFinalBitwise.Controllers
         }
 
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
-        [Authorize(Roles = "Admin, Cliente")]
+        [Authorize(Roles = "Admin, Registrado")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ItemDTO>>> ObtenerTodos()
         {
@@ -39,7 +39,7 @@ namespace TPFinalBitwise.Controllers
         }
 
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
-        [Authorize(Roles = "Admin, Cliente")]
+        [Authorize(Roles = "Admin, Registrado")]
         [HttpGet("{id}", Name = "GetItem")]
         public async Task<ActionResult<ItemDTO>> ObtenerPorId(int id)
         {
@@ -55,7 +55,7 @@ namespace TPFinalBitwise.Controllers
         }
 
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
-        [Authorize(Roles = "Admin, Cliente")]
+        [Authorize(Roles = "Admin, Registrado")]
         [HttpGet("ObtenerConDataRelacionada/{id}")]
         public async Task<ActionResult<ItemDTO>> ObtenerConDataRelacionada(int id)
         {
@@ -70,7 +70,7 @@ namespace TPFinalBitwise.Controllers
 
 
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
-        [Authorize(Roles = "Admin, Cliente")]
+        //[Authorize(Roles = "Admin, Registrado")]
         [HttpGet("TodosConDataRelacionada")]
         public async Task<ActionResult<IEnumerable<ItemDTO>>> TodosConDataRelacionada()
         {
@@ -80,9 +80,9 @@ namespace TPFinalBitwise.Controllers
         }
 
 
-        [Authorize(Roles = "Admin, Cliente")]
+        [Authorize(Roles = "Admin, Registrado")]
         [HttpPost]
-        public async Task<ActionResult> Insertar(ItemCreacionDTO itemCreacionDTO)
+        public async Task<ActionResult> Insertar([FromBody] ItemCreacionDTO itemCreacionDTO)
         {
             var item = _mapper.Map<Item>(itemCreacionDTO);
             var producto = await _productoRepository.ObtenerPorId(item.ProductoId);
@@ -93,6 +93,8 @@ namespace TPFinalBitwise.Controllers
             }
             else
             {
+                item.TotalItem = producto.Precio * item.Cantidad;
+                
                 //Insersion del Item
                 var resultado = await _repository.Insertar(item);
                 if (!resultado)
@@ -104,14 +106,15 @@ namespace TPFinalBitwise.Controllers
                 //Actualizacion de la cantidad de stock
                 producto.CantidadStock = producto.CantidadStock - item.Cantidad;
                 await _productoRepository.Actualizar(producto);
-                
+
+                //return CreatedAtAction("ItemCreado", itemDTO);
                 return Ok(itemDTO);
             }
         }
 
-        [Authorize(Roles = "Admin, Cliente")]
+        [Authorize(Roles = "Admin, Registrado")]
         [HttpPut("{id}")]
-        public async Task<ActionResult> Actualizar(int id, ItemCreacionDTO itemCreacionDTO)
+        public async Task<ActionResult> Actualizar([FromRoute] int id, [FromBody] ItemCreacionDTO itemCreacionDTO)
         {
             var item = await _repository.ObtenerPorId(id);
             if (item == null)
@@ -126,10 +129,12 @@ namespace TPFinalBitwise.Controllers
             }
             return NoContent();
         }
+        
+        
 
-        [Authorize(Roles = "Admin, Cliente")]
+        [Authorize(Roles = "Admin, Registrado")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Eliminar(int id)
+        public async Task<ActionResult> Eliminar([FromBody] int id)
         {
             var item = await _itemRepository.ObtenerPorId(id);
             var resultado = await _repository.Eliminar(id);

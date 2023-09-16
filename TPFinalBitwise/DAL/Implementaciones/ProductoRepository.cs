@@ -25,5 +25,26 @@ namespace TPFinalBitwise.DAL.Implementaciones
             var query = await _context.Productos.Include(c => c.Categoria).FirstOrDefaultAsync(p => p.Id == id);
             return query;
         }
+
+        public async Task<bool> ActualizarStock(int id, int cantidad, string operacion)
+        {
+            var productos = await _context.Productos.ToListAsync();
+            var producto = productos.Find(p => p.Id == id);
+            var resultado = false;
+            if (producto == null)
+            {
+                return resultado;
+            }
+            if(operacion == "restar")
+            {
+                producto.CantidadStock -= cantidad;
+            }else if(operacion == "sumar")
+            {
+                producto.CantidadStock += cantidad;
+            }
+            _context.Productos.Update(producto);
+            resultado = await _context.SaveChangesAsync() > 0;
+            return resultado;
+        }
     }
 }

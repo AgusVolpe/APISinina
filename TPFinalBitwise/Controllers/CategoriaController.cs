@@ -74,7 +74,7 @@ namespace TPFinalBitwise.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult> Insertar(CategoriaCreacionDTO categoriaCreacionDTO)
+        public async Task<ActionResult> Insertar([FromBody] CategoriaCreacionDTO categoriaCreacionDTO)
         {
             var categoria = _mapper.Map<Categoria>(categoriaCreacionDTO);
 
@@ -90,7 +90,7 @@ namespace TPFinalBitwise.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<ActionResult> Actualizar(int id, CategoriaCreacionDTO categoriaCreacionDTO)
+        public async Task<ActionResult> Actualizar([FromRoute] int id, [FromBody] CategoriaCreacionDTO categoriaCreacionDTO)
         {
             var categoria = await _repository.ObtenerPorId(id);
             if (categoria == null)
@@ -108,7 +108,7 @@ namespace TPFinalBitwise.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Eliminar(int id)
+        public async Task<ActionResult> Eliminar([FromBody] int id)
         {
             var resultado = await _repository.Eliminar(id);
             if (!resultado)
