@@ -26,7 +26,7 @@ namespace TPFinalBitwise.DAL.Implementaciones
             return query;
         }
 
-        public async Task<bool> ActualizarStock(int id, int cantidad, string operacion)
+        public async Task<bool> SumarStock(int id, int cantidad)
         {
             var productos = await _context.Productos.ToListAsync();
             var producto = productos.Find(p => p.Id == id);
@@ -35,14 +35,33 @@ namespace TPFinalBitwise.DAL.Implementaciones
             {
                 return resultado;
             }
-            if(operacion == "restar")
-            {
-                producto.CantidadStock -= cantidad;
-            }else if(operacion == "sumar")
-            {
-                producto.CantidadStock += cantidad;
-            }
+            producto.CantidadStock += cantidad;
             _context.Productos.Update(producto);
+            resultado = await _context.SaveChangesAsync() > 0;
+            return resultado;
+        }
+
+        public async Task<bool> ActualizarStock(HashSet<Item> items, string operacion)
+        {
+            var resultado = false;
+            for (int i = 0; i < items.Count(); i++)
+            {
+                var productos = await _context.Productos.ToListAsync();
+                var item = items.ElementAt(i);
+                var producto = productos.Find(p => p.Id == item.ProductoId);
+                if (producto == null)
+                {
+                    return resultado;
+                }
+                if(operacion == "restar")
+                {
+                    producto.CantidadStock -= item.Cantidad;
+                }else if(operacion == "sumar")
+                {
+                    producto.CantidadStock += item.Cantidad;
+                }
+                _context.Productos.Update(producto);
+            }
             resultado = await _context.SaveChangesAsync() > 0;
             return resultado;
         }

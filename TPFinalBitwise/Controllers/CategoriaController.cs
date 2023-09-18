@@ -4,7 +4,6 @@ using TPFinalBitwise.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TPFinalBitwise.DAL.Implementaciones;
 using Microsoft.AspNetCore.Authorization;
 
 namespace TPFinalBitwise.Controllers
@@ -24,6 +23,7 @@ namespace TPFinalBitwise.Controllers
             _categoriaRepository = categoriaRepository;
         }
 
+
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategoriaDTO>>> ObtenerTodos()
@@ -32,6 +32,7 @@ namespace TPFinalBitwise.Controllers
             var categoriasDTO = _mapper.Map<IEnumerable<CategoriaDTO>>(categorias);
             return Ok(categoriasDTO);
         }
+
 
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
         [HttpGet("{id}", Name = "GetCategoria")]
@@ -42,11 +43,11 @@ namespace TPFinalBitwise.Controllers
             {
                 return NotFound();
             }
-
             var categoriaDTO = _mapper.Map<CategoriaDTO>(categoria);
             return Ok(categoriaDTO);
            
         }
+
 
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
         [HttpGet("ObtenerConDataRelacionada/{id}")]
@@ -77,16 +78,15 @@ namespace TPFinalBitwise.Controllers
         public async Task<ActionResult> Insertar([FromBody] CategoriaCreacionDTO categoriaCreacionDTO)
         {
             var categoria = _mapper.Map<Categoria>(categoriaCreacionDTO);
-
             var resultado = await _repository.Insertar(categoria);
             if (!resultado)
             {
                 return NotFound();
             }
             var categoriaDTO = _mapper.Map<CategoriaDTO>(categoria);
-
             return Ok(categoriaDTO);
         }
+
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
@@ -105,6 +105,7 @@ namespace TPFinalBitwise.Controllers
             }
             return NoContent();
         }
+
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]

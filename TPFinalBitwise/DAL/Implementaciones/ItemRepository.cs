@@ -34,19 +34,5 @@ namespace TPFinalBitwise.DAL.Implementaciones
             var items = query.FindAll(i => i.VentaId == ventaId);
             return items;
         }
-
-        /*public async Task<bool> ActualizarTotalItem(int id, float totalItem)
-        {
-            var item = await _context.Items.FirstOrDefaultAsync(i => i.Id == id);
-            var resultado = false;
-            if (item == null)
-            {
-                return resultado;
-            }
-            item.TotalItem = totalItem;
-            _context.Items.Update(item);
-            resultado = await _context.SaveChangesAsync() > 0;
-            return resultado;
-        }*/
     }
 }

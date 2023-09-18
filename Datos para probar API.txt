@@ -1,0 +1,38 @@
+Datos para una venta:
+{
+  "fechaRealizacion": "14/09/2023",
+  "userId": "8c9ef9d6-930d-414f-b03b-0e9217ed881a",
+  "items": [
+    {
+      "productoId": 2,
+      "cantidad": 1
+    },
+    {
+      "productoId": 3,
+      "cantidad": 2
+    },
+    {
+      "productoId": 4,
+      "cantidad": 1
+    }
+  ]
+}
+
+Logins de perfiles:
+Agustin / Admin
+{
+  "userName": "agustin@gmail.com",
+  "password": "_CABocaJuniors12"
+}
+
+Tomas / Registrado
+{
+  "userName": "tomas@hotmail.com",
+  "password": "CursoBitwise_1"
+}
+
+Paula / Visitante
+{
+  "userName": "paula@live.com.ar",
+  "password": "Paula_1"
+}

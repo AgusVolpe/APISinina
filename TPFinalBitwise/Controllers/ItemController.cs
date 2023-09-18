@@ -28,6 +28,7 @@ namespace TPFinalBitwise.Controllers
             _productoRepository = productoRepository;
         }
 
+
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
         [Authorize(Roles = "Admin, Registrado")]
         [HttpGet]
@@ -37,6 +38,7 @@ namespace TPFinalBitwise.Controllers
             var itemsDTO = _mapper.Map<IEnumerable<ItemDTO>>(items);
             return Ok(itemsDTO);
         }
+
 
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
         [Authorize(Roles = "Admin, Registrado")]
@@ -54,6 +56,7 @@ namespace TPFinalBitwise.Controllers
 
         }
 
+
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
         [Authorize(Roles = "Admin, Registrado")]
         [HttpGet("ObtenerConDataRelacionada/{id}")]
@@ -70,7 +73,7 @@ namespace TPFinalBitwise.Controllers
 
 
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
-        //[Authorize(Roles = "Admin, Registrado")]
+        [Authorize(Roles = "Admin, Registrado")]
         [HttpGet("TodosConDataRelacionada")]
         public async Task<ActionResult<IEnumerable<ItemDTO>>> TodosConDataRelacionada()
         {
@@ -88,7 +91,6 @@ namespace TPFinalBitwise.Controllers
             var producto = await _productoRepository.ObtenerPorId(item.ProductoId);
             if(producto.CantidadStock < item.Cantidad)
             {
-                //return Forbid();
                 return NotFound("Producto con stock insuficiente");
             }
             else
@@ -104,13 +106,15 @@ namespace TPFinalBitwise.Controllers
                 var itemDTO = _mapper.Map<ItemDTO>(item);
                 
                 //Actualizacion de la cantidad de stock
-                producto.CantidadStock = producto.CantidadStock - item.Cantidad;
-                await _productoRepository.Actualizar(producto);
+                HashSet<Item> items = new HashSet<Item>();
+                items.Add(item);
+                await _productoRepository.ActualizarStock(items,"restar");
 
                 //return CreatedAtAction("ItemCreado", itemDTO);
                 return Ok(itemDTO);
             }
         }
+
 
         [Authorize(Roles = "Admin, Registrado")]
         [HttpPut("{id}")]
@@ -128,25 +132,25 @@ namespace TPFinalBitwise.Controllers
                 return BadRequest();
             }
             return NoContent();
-        }
-        
-        
+        }        
+
 
         [Authorize(Roles = "Admin, Registrado")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Eliminar([FromBody] int id)
         {
             var item = await _itemRepository.ObtenerPorId(id);
+            HashSet<Item> items = new HashSet<Item>();
+            items.Add(item);
+
             var resultado = await _repository.Eliminar(id);
             if (!resultado)
             {
                 return BadRequest();
             }
-            
-            var producto = await _productoRepository.ObtenerPorId(item.ProductoId);
+
             //Actualizacion de la cantidad de stock
-            producto.CantidadStock = producto.CantidadStock + item.Cantidad;
-            await _productoRepository.Actualizar(producto);
+            await _productoRepository.ActualizarStock(items, "sumar");
 
             return NoContent();
         }

@@ -11,7 +11,6 @@ namespace TPFinalBitwise.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Policy = "AdminPolicy")]
     public class ProductoController : ControllerBase
     {
         private readonly IGenericRepository<Producto> _repository;
@@ -25,6 +24,7 @@ namespace TPFinalBitwise.Controllers
             _productoRepository = productoRepository;
         }
 
+
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductoDTO>>> ObtenerTodos()
@@ -33,6 +33,7 @@ namespace TPFinalBitwise.Controllers
             var productosDTO = _mapper.Map<IEnumerable<ProductoDTO>>(productos);
             return Ok(productosDTO);
         }
+
 
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
         [HttpGet("{id}", Name = "GetProducto")]
@@ -48,6 +49,7 @@ namespace TPFinalBitwise.Controllers
             return Ok(productoDTO);
         }
 
+
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
         [HttpGet("ObtenerConDataRelacionada/{id}")]
         public async Task<ActionResult<ProductoDTO>> ObtenerConDataRelacionada(int id)
@@ -61,6 +63,7 @@ namespace TPFinalBitwise.Controllers
             return Ok(productoDTO);
         }
         
+
         [ResponseCache(CacheProfileName = "CachePorDefecto")]
         [HttpGet("TodosConDataRelacionada")]
         public async Task<ActionResult<IEnumerable<ProductoDTO>>> TodosConDataRelacionada()
@@ -70,7 +73,7 @@ namespace TPFinalBitwise.Controllers
             return Ok(productosDTO);
         }
 
-        //[Authorize(Policy = "AdminPolicy")]
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult> Insertar([FromBody] ProductoCreacionDTO productoCreacionDTO)
@@ -86,6 +89,7 @@ namespace TPFinalBitwise.Controllers
 
             return Ok(productoDTO);
         }
+
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
@@ -104,6 +108,23 @@ namespace TPFinalBitwise.Controllers
             }
             return NoContent();
         }
+
+
+        [HttpPatch("SumarCantidadStock/{id}")]
+        public async Task<ActionResult> ActualizarCantidadStock([FromRoute] int id, int cantidad)
+        {
+            if(cantidad <= 0)
+            {
+                return BadRequest("La cantidad a sumar debe ser mayor a 0");
+            }
+            var resultado = await _productoRepository.SumarStock(id, cantidad);
+            if (!resultado)
+            {
+                return BadRequest();
+            }
+            return NoContent();
+        }
+
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]

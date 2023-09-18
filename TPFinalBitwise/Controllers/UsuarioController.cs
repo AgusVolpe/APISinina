@@ -26,6 +26,7 @@ namespace TPFinalBitwise.Controllers
             this._respuestaAPI = new RespuestaAPI();
         }
 
+
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UsuarioDatosDTO>>> ObtenerTodos()
@@ -34,6 +35,7 @@ namespace TPFinalBitwise.Controllers
             var usuariosDTO = _mapper.Map<IEnumerable<UsuarioDatosDTO>>(usuarios);
             return Ok(usuariosDTO);
         }
+
 
         [Authorize(Roles = "Admin")]
         [HttpGet("{id}", Name = "GetUsuario")]
@@ -47,6 +49,7 @@ namespace TPFinalBitwise.Controllers
             var usuarioDTO = _mapper.Map<UsuarioDatosDTO>(usuario);
             return Ok(usuarioDTO);
         }
+
 
         [HttpPost("registro")]
         public async Task<IActionResult> Insertar([FromBody] UsuarioRegistroDTO usuarioRegistroDTO)
@@ -72,6 +75,7 @@ namespace TPFinalBitwise.Controllers
             _respuestaAPI.EsExitoso = true;
             return Ok(_respuestaAPI);
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UsuarioLoginDTO usuarioLoginDTO)
